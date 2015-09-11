@@ -61,14 +61,14 @@ class Habitica{
 
     public function getAllTasksWithName($name){
 	$tasks = $this->getAllTasks();
-	return $this->findAllTasksWithName($tasks, $name);
+	return $this->filterTasksByName($tasks, $name);
     }
 
     public function getTask($id){
 	return $this->habiticaGet('user/tasks/' . $id);
     }
 
-    private function findAllTasksWithName($tasks, $name){
+    private function filterTasksByName($tasks, $name){
 	$found_tasks = array();
 	foreach($tasks as $task){
 	    if($task->text === $name)
@@ -95,20 +95,6 @@ class Habitica{
 	return $found_tasks;
     }
 
-    private function findTasksByName($name, $tasks, $completed=false, $type='todo'){
-	$found_tasks = array();
-	foreach($tasks as $task){
-	    if($type === 'todo' and $task->type === 'todo' and $completed === $task->completed){
-		if($name === $task->text)
-		    array_push($found_tasks, $task);
-	    }
-	    else if($type === 'habit' and $task->type === 'habit'){
-		array_push($found_tasks, $task);
-	    }	
-	}
-	return $found_tasks;
-    }
-
     public function createRecurringTask($name, $starts, $recurs, $type='todo'){
 	/* Creates a recurring task that will recur on specific dates.
 	   
@@ -127,7 +113,7 @@ class Habitica{
 	*/
 	# First check if there is already a task with this name
 	$tasks = json_decode($this->getAllTasks());
-	$tasks = $this->findAllTasksWithName($tasks, $name);
+	$tasks = $this->filterTasksByName($tasks, $name);
 	$tasks = $this->filterTasksByType($tasks, $type);
 	
 	if(!empty($this->filterTasksByCompleted($tasks, false))){
