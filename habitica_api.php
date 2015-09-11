@@ -170,11 +170,9 @@ class Habitica{
 		date_modify($date, $recurs);
 	    }
 
-	    # Not sure how this time works. the 07 is just what was returned from the
-	    # habitica server when I asked for a task with a due date. You should check
-	    # if this is correct by creating a task with a due date and then finding it
-	    # with a getAllTasks(). Check the "date" and change accordingly. If it is not
-	    # set properly then the tasks can have the wrong due date.
+	    # Not sure how the time works on Habitica. Sometimes when editing then
+	    # due date it shows up as one day early, but when displayed in the actual
+	    # task it appears correctly.
 	    $task->date = date("Y-m-d", $date->getTimestamp()); 
 	    return $this->habiticaPost('user/tasks', $task);
 	}
