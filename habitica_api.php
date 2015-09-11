@@ -68,7 +68,7 @@ class Habitica{
 	return $this->habiticaGet('user/tasks/' . $id);
     }
 
-    private function filterTasksByName($tasks, $name){
+    public function filterTasksByName($tasks, $name){
 	$found_tasks = array();
 	foreach($tasks as $task){
 	    if($task->text === $name)
@@ -77,7 +77,7 @@ class Habitica{
 	return $found_tasks;
     }
 
-    private function filterTasksByCompleted($tasks, $completed){
+    public function filterTasksByCompleted($tasks, $completed){
 	$found_tasks = array();
 	foreach($tasks as $task){
 	    if($task->completed === $completed)
@@ -86,7 +86,7 @@ class Habitica{
 	return $found_tasks;
     }
 
-    private function filterTasksByType($tasks, $type){
+    public function filterTasksByType($tasks, $type){
 	$found_tasks = array();
 	foreach($tasks as $task){
 	    if($task->type === $type)
