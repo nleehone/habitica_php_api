@@ -37,10 +37,6 @@ class Habitica{
 	return $response;
     }
     
-    public function getTask($id){
-	return $this->habiticaGet('user/tasks/' . $id);
-    }
-
     public function habiticaPost($api, $data=false){
 	$curl = curl_init();
 	curl_setopt($curl, CURLOPT_URL, $this->api_base . $api);
@@ -61,6 +57,42 @@ class Habitica{
 
     public function getAllTasks(){
 	return $this->habiticaGet('user/tasks');
+    }
+
+    public function getAllTasksWithName($name){
+	$tasks = $this->getAllTasks();
+	return $this->findAllTasksWithName($tasks, $name);
+    }
+
+    public function getTask($id){
+	return $this->habiticaGet('user/tasks/' . $id);
+    }
+
+    private function findAllTasksWithName($tasks, $name){
+	$found_tasks = array();
+	foreach($tasks as $task){
+	    if($task->text === $name)
+		array_push($found_tasks, $task);
+	}
+	return $found_tasks;
+    }
+
+    private function filterTasksByCompleted($tasks, $completed){
+	$found_tasks = array();
+	foreach($tasks as $task){
+	    if($task->completed === $completed)
+		array_push($found_tasks, $task);
+	}
+	return $found_tasks;
+    }
+
+    private function filterTasksByType($tasks, $type){
+	$found_tasks = array();
+	foreach($tasks as $task){
+	    if($task->type === $type)
+		array_push($found_tasks, $task);
+	}
+	return $found_tasks;
     }
 
     private function findTasksByName($name, $tasks, $completed=false, $type='todo'){
@@ -95,12 +127,14 @@ class Habitica{
 	*/
 	# First check if there is already a task with this name
 	$tasks = json_decode($this->getAllTasks());
-	if(!empty($this->findTasksByName($name, $tasks, false, $type))){
+	$tasks = $this->findAllTasksWithName($tasks, $name);
+	$tasks = $this->filterTasksByType($tasks, $type);
+	
+	if(!empty($this->filterTasksByCompleted($tasks, false))){
 	    # If there is already a task then we don't add a new instance
 	    return "Task already exists";
 	}
-	$tasks = $this->findTasksByName($name, $tasks, true, $type);
-	if(!empty($tasks)){
+	else if(!empty($this->filterTasksByCompleted($tasks, true))){
 	    # If there was a previous task with this name then we use its
 	    # completion date to set the next completion date
 
@@ -144,12 +178,6 @@ class Habitica{
 	    $task->date = date("Y-m-d", $date->getTimestamp()); 
 	    return $this->habiticaPost('user/tasks', $task);
 	}
-    }
-
-
-    public function getTaskByName($name){
-	$tasks = $this->habiticaGet('user/tasks');
-	return $task;
     }
 }
 
