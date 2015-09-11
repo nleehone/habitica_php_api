@@ -17,14 +17,16 @@ $hb = new Habitica(getenv('HABITICA_USER_ID'), getenv('HABITICA_API_KEY'));
 ```
 
 ### Creating a recurring task
-Use the ```php createRecurringTask``` function to add a task that will recur at a given interval.
+Use the ```createRecurringTask``` function to add a task that will recur at a given interval.
 
 For example, if you want the todo to recur automatically each week then use
+```php
 $hb->createRecurringTask('Weekly task', '2015-09-01', '+1 week', 'todo')
+```
 
 Although the option of a weekly todo is already in Habitica, this particular version has some advantages:
 * The recurrance happens on the dueDate, which means that you will not be penalized for not doing the task on a particular day. This could be useful if you needed to have a task that needs to be done once a week, but it is not a big deal if it happens a few days late.
-* The recurrance can happen at intervals that are not available to Habitica. For example, you could set '+2 weeks', or '+1 month' for the recurrance.
+* The recurrance can happen at intervals that are not currently available to Habitica. For example, you could set '+2 weeks', or '+1 month' for the recurrance.
 
 ### Notes:
 * The recurrance can act funny if you set it to recur monthly and have the day set to the 29th, 30th, or 31st of a month. The problem is that adding 1 month to Jan 30 results in March 2st, which might not be the expected behaviour. This propagages when the month is added multiple times so a task that began on 2010-11-30 will become 2015-10-02 if the current date is 2015-09-09. **If anyone knows a nice way to implement this feature I'd be happy to hear it!**
@@ -33,6 +35,8 @@ Although the option of a weekly todo is already in Habitica, this particular ver
 If you are on linux then you can use cron jobs to automatically run a script that creates/updates your recurring tasks.
 Just create a script that has the recurring task in it such as
 ```php
+require_once('habitica_api.php');
+
 $hb = new Habitica(getenv('HABITICA_USER_ID'), getenv('HABITICA_API_KEY'));
 $hb->createRecurringTask('Weekly task', '2015-09-01', '+1 week', 'todo')
 ```
