@@ -55,6 +55,26 @@ class Habitica{
 	return $result;
     }
 
+    public function getStatus(){
+	return $this->habiticaGet('status');
+    }
+
+    public function getUser(){
+	return $this->habiticaGet('user');
+    }
+
+    public function getAnonymizedUser(){
+	return $this->habiticaGet('user/anonymized');
+    }
+
+    public function getContent(){
+	return $this->habiticaGet('content');
+    }
+
+    public function getContentPaths(){
+	return $this->habiticaGet('content/paths');
+    }
+
     public function getAllTasks(){
 	return $this->habiticaGet('user/tasks');
     }
